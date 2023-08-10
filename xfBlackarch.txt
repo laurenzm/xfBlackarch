@@ -34,16 +34,6 @@ yay -S brave-bin
 ## Update Distro
 pacman -Syyu --needed --overwrite='*' blackarch
 
-## update script
-sudo pacman -Syu
-yay -Syu
-sudo paccache -ruk 0
-sudo paccache -rk 0
-echo
-echo "Update done !"
-echo
-read -n 1 -s -r -p "Press any key to continue"
-
 ## Add user with sudo
 useradd -m -G ftp,mail,log,games,network,scanner,power,wheel,audio,disk,input,video,users,dhcpcd,tty,http,vboxsf USER_NAME
 passwd USER_PASSWORD
@@ -65,7 +55,7 @@ sudo /usr/bin/vmhgfs-fuse --enabled
 sudo /usr/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfs-fuse,allow_other
 
 ## Keyboard configuration for X
-## /etc/X11/xorg.conf.d/00-keyboard.conf
+## edit the file /etc/X11/xorg.conf.d/00-keyboard.conf
 
 Section	"InputClass"
 	Identifier	"KeyboardDefaults"
@@ -81,3 +71,16 @@ pacman -S xfce4 xfce4-goodies blackarch-config-xfce pulseaudio pavucontrol black
 
 ## Restart OS
 reboot
+
+## Login with user account
+## update script for user account
+echo '
+sudo pacman -Syu
+yay -Syu
+sudo paccache -ruk 0
+sudo paccache -rk 0
+echo
+echo <Update done !>
+echo
+read -n 1 -s -r -p <Press any key to continue>' | sudo tee -a /usr/local/bin/xblackarch_update
+sudo chmod +x /usr/local/bin/xblackarch_update
