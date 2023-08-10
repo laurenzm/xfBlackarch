@@ -1,0 +1,83 @@
+## Do this after the installation process
+## In this document we will work with a virtual machine
+## Download ova image : https://blackarch.org/downloads.html#ova-download
+## 
+
+## Remove the beep sound
+## PC Speaker
+https://wiki.archlinux.org/title/PC_speaker
+rmmod pcspkr
+rmmod snd_pcsp
+
+/etc/modprobe.d/nobeep.conf
+blacklist pcspkr
+blacklist snd_pcsp
+
+## Update the mirror listwith best mirros
+## rankmirror
+pacman -Sy pacman-contrib
+cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.old
+rankmirror -n 6 /etc/pacman.d/mirrorlist
+
+## Issue with invalid or corrupted package (PGP signature)
+pacman -Sy archlinux-keyring
+pacman-key --refresh-keys
+pacman -Syu
+
+## Remove virtualbox if necessary
+pacaman -Rsn virtualbox-guest-tools
+
+## Install some usefull tools
+pacman -Sy terminator git curl mc byobu rust go ruby paru yay sudo zsh fish open-vm-tools geany pluma torbrowser-launcher vscode
+yay -S brave-bin
+
+## Update Distro
+pacman -Syyu --needed --overwrite='*' blackarch
+
+## update script
+sudo pacman -Syu
+yay -Syu
+sudo paccache -ruk 0
+sudo paccache -rk 0
+echo
+echo "Update done !"
+echo
+read -n 1 -s -r -p "Press any key to continue"
+
+## Add user with sudo
+useradd -m -G ftp,mail,log,games,network,scanner,power,wheel,audio,disk,input,video,users,dhcpcd,tty,http,vboxsf USER_NAME
+passwd USER_PASSWORD
+
+## Vmware copy/paste
+sudo systemctl satus vmtoolsd
+sudo pacman -Su xf86-input-vmmouse xf86-video-vmware mesa
+nano ~/.config/i3/config 
+
+## TO VERIFY -- Add the following line at the end. (This assumes you already had an i3 configuration file created).
+exec --no-startup-id vmware-user
+
+## Vmware Shared folders :
+sudo mkdir /mnt/hgfs
+sudo /usr/bin/vmhgfs-fuse --enabled
+
+* sudo vmhgfs-fuse .host:/ /mnt/hgfs -o allow_other
+
+sudo /usr/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfs-fuse,allow_other
+
+## Keyboard configuration for X
+## /etc/X11/xorg.conf.d/00-keyboard.conf
+
+Section	"InputClass"
+	Identifier	"KeyboardDefaults"
+	Driver		"keyboard"blackarch-config-zsh
+	MatchIsKeyboard	"on"
+	Option		"XkbLayout" "fr"
+	Option		"XkbVariant" "azerty"
+EndSection
+
+## Installing XFCE Desktop Environment and Display Manager
+pacman -S xfce4 xfce4-goodies blackarch-config-xfce pulseaudio pavucontrol blackarch-config-xfce blackarch-config-zsh blackarch-config-x11 blackarch-config-vim blackarch-config-icons blackarch-config-cursor blackarch-config-bash
+## You can adapt the XFCE theme paramters with blackarch icons and cursor
+
+## Restart OS
+reboot
